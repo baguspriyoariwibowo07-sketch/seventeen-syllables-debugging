@@ -73,12 +73,20 @@ function validateEntry(text: string): void {
     throw new Error(`entry must be exactly three lines, got ${lines.length}`);
   }
   const shape = [5, 7, 5];
+  let total = 0;
   lines.forEach((line, i) => {
     const n = countSyllables(line);
     if (n !== shape[i]) {
       throw new Error(`line ${i + 1} has ${n} syllables, expected ${shape[i]}: ${line}`);
     }
+    total += n;
   });
+  // A haiku is seventeen syllables in total; the per-line checks above
+  // already imply this, but asserting the total catches a shape table
+  // that drifts from the 5-7-5 contract.
+  if (total !== 17) {
+    throw new Error(`haiku has ${total} syllables in total, expected 17`);
+  }
 }
 
 validateEntry(readFileSync(outFile, "utf8"));
